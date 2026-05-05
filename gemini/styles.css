@@ -1,0 +1,27 @@
+/* The main badge styling */
+.academic-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    margin-right: 12px; /* This creates the gap between the label and the text */
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* Priority Colors */
+.p-urgent {
+    background-color: #d93025; /* Red for Urgent */
+}
+
+.p-important {
+    background-color: #f9ab00; /* Orange/Yellow for Important */
+    color: #202124; /* Darker text for better contrast on yellow */
+}
+
+.p-normal {
+    background-color: #1e8e3e; /* Green for Normal */
+}

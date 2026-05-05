@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="popup.css" />
+    </head>
+    <body>
+        <div class="header">
+            <h1>Academic Priority</h1>
+        </div>
+
+        <div class="container">
+            <label>Add Custom Keyword</label>
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="newWord"
+                    placeholder="e.g. Scholarship"
+                />
+                <select id="priorityLevel">
+                    <option value="high">High</option>
+                    <option value="medium">Med</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <button id="saveBtn">Add Keyword</button>
+
+            <div class="divider"></div>
+
+            <div class="keyword-list-header">Custom Keywords</div>
+            <div id="keywordList" class="keyword-list"></div>
+        </div>
+        <script src="popup.js"></script>
+    </body>
+</html>

@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Academic Priority Assistant",
+    "version": "1.0",
+    "description": "Prioritize academic emails using Rabin-Karp algorithm.",
+    "permissions": ["storage"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://mail.google.com/*"],
+            "js": ["content.js"],
+            "css": ["styles.css"]
+        }
+    ],
+    "host_permissions": ["https://mail.google.com/*"]
+}

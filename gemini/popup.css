@@ -1,0 +1,212 @@
+body {
+    width: 320px;
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #202124;
+}
+
+.header {
+    background-color: #1a73e8;
+    color: white;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header h1 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 500;
+}
+
+.container {
+    padding: 16px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5f6368;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+input {
+    flex: 2;
+    padding: 8px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    outline: none;
+}
+
+input:focus {
+    border: 2px solid #1a73e8;
+    padding: 7px 11px;
+}
+
+select {
+    flex: 1;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    background: #f8f9fa;
+}
+
+button {
+    width: 100%;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #1765cc;
+}
+
+.divider {
+    height: 1px;
+    background-color: #dadce0;
+    margin: 16px 0;
+}
+
+.keyword-list-header {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.keyword-list {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.kw-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: #f1f3f4;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.kw-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: white;
+}
+
+.tag-high {
+    background: #d93025;
+}
+.tag-medium {
+    background: #f9ab00;
+}
+.tag-low {
+    background: #1e8e3e;
+}
+/* Styling for each keyword row */
+.kw-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #ffffff;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.kw-item:hover {
+    background: #fcfcfc;
+}
+
+.kw-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kw-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #3c4043;
+}
+
+/* The actual Delete Button */
+.delete-btn {
+    background-color: #fce8e6 !important;
+    color: #d93025 !important;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    width: auto !important; /* Overrides the 100% width from main buttons */
+    font-weight: bold;
+}
+
+.delete-btn:hover {
+    background-color: #d93025 !important;
+    color: white !important;
+}
+
+/* Priority Tags */
+.kw-tag {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: white;
+}
+
+.tag-high {
+    background: #d93025;
+}
+.tag-medium {
+    background: #f9ab00;
+    color: #202124;
+}
+.tag-low {
+    background: #1e8e3e;
+}
+
+.tag-high {
+    background: #d93025;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+.tag-medium {
+    background: #f9ab00;
+    color: #202124;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+.tag-low {
+    background: #1e8e3e;
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-transform: uppercase;
+}
