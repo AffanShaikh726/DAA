@@ -1,67 +1,5 @@
 const activeScans = new Set();
 
-async function processInbox() {
-    const rows = document.querySelectorAll("tr.zA");
-
-    for (const row of rows) {
-        // 1. SELECT CONTENT
-        const senderNode = row.querySelector(".yW, .zF, [email]");
-        const subjectNode = row.querySelector(".bog, .y6");
-
-        if (!subjectNode) continue;
-
-        const senderText = senderNode ? senderNode.innerText : "";
-        const subjectText = subjectNode.innerText;
-        const fullText = `${senderText} ${subjectText}`;
-
-        // 2. CREATE A UNIQUE SIGNATURE FOR THIS SPECIFIC EMAIL CONTENT
-        // This ensures that if Gmail reuses the 'row' for a different email,
-        // the signature will change and we will re-scan it.
-        const contentSignature = fullText.replace(/\s/g, "");
-
-        // 3. CHECK IF BADGE IS MISSING OR CONTENT IS NEW
-        const existingBadge = row.querySelector(".academic-badge");
-        const lastScannedSignature = row.getAttribute("data-last-signature");
-
-        // If the badge is there AND the content hasn't changed, skip.
-        if (existingBadge && lastScannedSignature === contentSignature) {
-            continue;
-        }
-
-        // If the signature changed but a badge is still there, remove the old badge first
-        if (existingBadge && lastScannedSignature !== contentSignature) {
-            existingBadge.remove();
-        }
-
-        // 4. LOCKING (Memory Set + Attribute)
-        if (activeScans.has(contentSignature)) continue;
-        activeScans.add(contentSignature);
-
-        try {
-            const res = await analyze(fullText);
-
-            // Final safety check
-            if (!row.querySelector(".academic-badge")) {
-                const badge = document.createElement("span");
-                badge.className = `academic-badge ${res.class}`;
-                badge.innerText = res.label;
-
-                const target =
-                    row.querySelector(".yX") || subjectNode.parentElement;
-                if (target) {
-                    target.prepend(badge);
-                    // Store the signature so we know this row is "up to date"
-                    row.setAttribute("data-last-signature", contentSignature);
-                }
-            }
-        } catch (err) {
-            console.error("Scan error:", err);
-        } finally {
-            // Short cooldown
-            setTimeout(() => activeScans.delete(contentSignature), 300);
-        }
-    }
-}
 class RabinKarpScanner {
     constructor(base = 256, prime = 101) {
         this.base = base;
@@ -243,11 +181,66 @@ async function analyze(text) {
     });
 
     if (score >= 70) return { label: "Urgent", class: "p-urgent" };
-    if (score >= 30) return { label: "Important", class: "p-important" };
+    if (score >= 25) return { label: "Important", class: "p-important" };
     return { label: "Normal", class: "p-normal" };
 }
 
-// Debouncer for Gmail DOM changes
+async function processInbox() {
+    const rows = document.querySelectorAll("tr.zA");
+
+    for (const row of rows) {
+        // 1. SELECT CONTENT: Targeted selectors for Sender and Subject
+        // Added .zF and [email] as they are common for Uni accounts
+        const senderNode = row.querySelector(".yP, .zF, .bA4, [email]");
+        const subjectNode = row.querySelector(".bog, .y6");
+
+        if (!subjectNode) continue;
+
+        const senderText = senderNode ? senderNode.innerText : "";
+        const subjectText = subjectNode.innerText;
+        const fullText = `${senderText} ${subjectText}`;
+
+        // 2. CREATE UNIQUE SIGNATURE
+        const contentSignature = fullText.replace(/\s/g, "");
+
+        // 3. CHECK EXISTING STATE
+        const existingBadge = row.querySelector(".academic-badge");
+        const lastScannedSignature = row.getAttribute("data-last-signature");
+
+        if (existingBadge && lastScannedSignature === contentSignature)
+            continue;
+        if (existingBadge && lastScannedSignature !== contentSignature)
+            existingBadge.remove();
+
+        // 4. LOCKING
+        if (activeScans.has(contentSignature)) continue;
+        activeScans.add(contentSignature);
+
+        try {
+            // Pass the COMBINED text to Rabin-Karp
+            const res = await analyze(fullText);
+
+            if (!row.querySelector(".academic-badge")) {
+                const badge = document.createElement("span");
+                badge.className = `academic-badge ${res.class}`;
+                badge.innerText = res.label;
+
+                const target =
+                    row.querySelector(".yX") || subjectNode.parentElement;
+                if (target) {
+                    target.prepend(badge);
+                    row.setAttribute("data-last-signature", contentSignature);
+                }
+            }
+        } catch (err) {
+            console.error("Scan error:", err);
+        } finally {
+            setTimeout(() => activeScans.delete(contentSignature), 300);
+        }
+    }
+}
+
+// Initialization and Observers
 let isProcessing = false;
 const observer = new MutationObserver(() => {
     if (isProcessing) return;
@@ -262,7 +255,6 @@ const observer = new MutationObserver(() => {
 const targetNode = document.querySelector(".bkK") || document.body;
 observer.observe(targetNode, { childList: true, subtree: true });
 
-// Observer for Navigation (Back from Email Body to Inbox)
 let lastUrl = location.href;
 const navObserver = new MutationObserver(() => {
     if (location.href !== lastUrl) {
@@ -272,24 +264,22 @@ const navObserver = new MutationObserver(() => {
             lastUrl.includes("#all") ||
             lastUrl.includes("#priority")
         ) {
-            // Wipe locks on navigation so rows re-render correctly
             document
                 .querySelectorAll("tr.zA")
-                .forEach((row) => row.removeAttribute("data-scanned"));
+                .forEach((row) => row.removeAttribute("data-last-signature"));
             processInbox();
         }
     }
 });
 navObserver.observe(document, { subtree: true, childList: true });
 
-// Popup Message Listener
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "REFRESH_LABELS") {
-        activeScans.clear(); // Clear the memory lock
+        activeScans.clear();
         document.querySelectorAll(".academic-badge").forEach((b) => b.remove());
         document
             .querySelectorAll("tr.zA")
-            .forEach((row) => row.removeAttribute("data-scanned"));
+            .forEach((row) => row.removeAttribute("data-last-signature"));
         processInbox();
     }
 });
